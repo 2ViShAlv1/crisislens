@@ -15,7 +15,7 @@ def load_teacher(path):
         if "label" in j: T[j["id"]] = j["label"]
     return T
 
-def main(split="sft_select", out_name="sft_train"):
+def main(split="sft_select", out_name="sft_train", version="v2"):
     D = ROOT / "data/processed"
     df = pd.read_parquet(D / f"{split}.parquet")
     T = load_teacher(D / f"teacher/{split}.jsonl")
@@ -24,7 +24,7 @@ def main(split="sft_select", out_name="sft_train"):
         if r.id not in T: continue
         rec = dict(T[r.id]); rec["category"] = r.label  # gold category always wins
         if not validate(rec): bad += 1; continue
-        rows.append({"id": r.id, "event": r.event, "label": r.label, "prompt": ft_prompt(r.text), "completion": to_completion(rec)})
+        rows.append({"id": r.id, "event": r.event, "label": r.label, "prompt": ft_prompt(r.text, version), "completion": to_completion(rec)})
     out = pd.DataFrame(rows)
     out[["prompt", "completion"]].to_csv(D / f"{out_name}.csv", index=False)
     out.to_parquet(D / f"{out_name}_full.parquet", index=False)

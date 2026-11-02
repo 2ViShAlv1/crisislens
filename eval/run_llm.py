@@ -15,9 +15,9 @@ from src.prompt import SYSTEM, user_msg, to_completion
 from src.sft_format import FT_INSTRUCTION, ft_prompt
 from src.env import load_env
 
-def build_messages(mode, text, shots):
+def build_messages(mode, text, shots, pv="v2"):
     if mode == "finetuned":
-        return [{"role": "user", "content": ft_prompt(text)}]
+        return [{"role": "user", "content": ft_prompt(text, pv)}]
     msgs = [{"role": "system", "content": SYSTEM}]
     if mode == "fewshot":
         for s in shots:
@@ -30,7 +30,7 @@ def main():
     ap.add_argument("--backend", default="openai"); ap.add_argument("--model", required=True)
     ap.add_argument("--base-url"); ap.add_argument("--key-env", default="TOGETHER_API_KEY")
     ap.add_argument("--name", required=True); ap.add_argument("--workers", type=int, default=8)
-    ap.add_argument("--limit", type=int); ap.add_argument("--max-tokens", type=int, default=200)
+    ap.add_argument("--limit", type=int); ap.add_argument("--prompt-version", default="v2"); ap.add_argument("--max-tokens", type=int, default=200)
     a = ap.parse_args(); load_env()
     df = pd.read_parquet(ROOT / f"data/processed/{a.split}.parquet")
     if a.limit: df = df.head(a.limit)
@@ -55,7 +55,7 @@ def main():
             r = cli.chat.completions.create(model=a.model, messages=msgs, temperature=0, max_tokens=a.max_tokens)
             u = r.usage; return r.choices[0].message.content, getattr(u, "prompt_tokens", None), getattr(u, "completion_tokens", None)
     def one(row):
-        msgs = build_messages(a.mode, row["text"], shots)
+        msgs = build_messages(a.mode, row["text"], shots, a.prompt_version)
         for k in range(4):
             try:
                 t0 = time.perf_counter(); txt, it, ot = call(msgs); dt = time.perf_counter() - t0

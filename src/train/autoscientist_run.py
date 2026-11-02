@@ -42,6 +42,7 @@ def launch(c, a):
     kw = dict(dataset_id=ds, model=a.model, training_method="instruction", data_format="chat",
               max_iterations=a.max_iterations, idempotency_key=a.name)
     if a.target: kw["target_win_rate"] = a.target
+    if a.hp: kw["hyperparams"] = json.loads(a.hp)
     run = c.autoscientist.create(**kw)
     meta = {"t": now(), "name": a.name, "csv": a.csv, "dataset_id": ds, "rows": st.row_count, "request": kw,
             "recommended_hyperparams": rec, "run": dump(run)}
@@ -76,7 +77,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("cmd")
     ap.add_argument("--csv"); ap.add_argument("--name"); ap.add_argument("--model", default="Qwen/Qwen3.5-9B")
     ap.add_argument("--max-iterations", type=int, default=3); ap.add_argument("--target", type=float)
-    ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
+    ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--hp"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
     a = ap.parse_args(); load_env()
     from adaption import Adaption; c = Adaption()
     {"launch": launch, "poll": poll, "download": download}[a.cmd](c, a)
