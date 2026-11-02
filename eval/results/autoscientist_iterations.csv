@@ -4,7 +4,9 @@ run,run_id,iteration,best_win_rate,status,learning_rate,n_epochs,lora_r,lora_alp
 #2 2B · 17.8k · v1 · default,2c060ec8-cc23-40e5-9e8e-57bbf0d37a6a,2,0.9181,succeeded,5e-05,3.0,32.0,64.0,0.05,0.7
 #3 9B · 17.8k · v1 · default,165c0bf4-8f62-4354-9e41-b6023431e211,1,0.5419,running,1e-05,1.0,16.0,32.0,0.1,0.7
 #3 9B · 17.8k · v1 · default,165c0bf4-8f62-4354-9e41-b6023431e211,2,0.5587,running,0.0002,5.0,32.0,64.0,0.03,0.7
+#3 9B · 17.8k · v1 · default,165c0bf4-8f62-4354-9e41-b6023431e211,3,0.5615,succeeded,0.0002,4.0,64.0,128.0,0.1,0.7
 #4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,1,0.6028,running,1e-05,1.0,16.0,32.0,0.1,0.95
 #4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,2,0.9019,running,0.0001,4.0,32.0,64.0,0.05,0.95
+#4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,3,0.9019,running,0.0001,4.0,32.0,64.0,0.05,0.95
 #5 2B · 17.8k · v2 prompt · lr/epoch override,7ebe8824-9857-4552-8574-8b58b3d55be5,1,0.8889,running,0.0002,3.0,32.0,64.0,0.1,0.9
 #5 2B · 17.8k · v2 prompt · lr/epoch override,7ebe8824-9857-4552-8574-8b58b3d55be5,2,0.9227,succeeded,0.00015,4.0,32.0,64.0,0.05,0.9
