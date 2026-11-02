@@ -37,7 +37,7 @@ def silver_metrics(pred_objs, silver):
     out["urgent_ge4_f1"] = float(f1_score(yu, pu, zero_division=0))
     L = [(norm_loc(p.get("location") if isinstance(p.get("location"), str) else None), norm_loc(s["location"])) for p, s in ok]
     out["location_exact"] = float(np.mean([a == b for a, b in L]))
-    out["location_overlap"] = float(np.mean([(a == b) or (a and b and (a in b or b in a)) for a, b in L]))
+    out["location_overlap"] = float(np.mean([bool((a == b) or (a and b and (a in b or b in a))) for a, b in L]))
     def jac(a, b):
         a, b = set(map(str.lower, a or [])), set(map(str.lower, b or []))
         return 1.0 if not a and not b else len(a & b) / len(a | b)
@@ -53,8 +53,10 @@ def load_silver(split="test_eval"):
             if "label" in j: S[j["id"]] = j["label"]
     return S
 
-def score(name, split="test_eval"):
+def score(name, split="test_eval", restrict=None, tag=""):
     df = pd.read_parquet(ROOT / f"data/processed/{split}.parquet")
+    if restrict is not None:
+        df = df[df.id.isin(restrict)].reset_index(drop=True)
     preds = {}
     for l in open(P / f"{name}__{split}.jsonl", encoding="utf-8"):
         j = json.loads(l); preds[j["id"]] = j  # last write wins
@@ -84,11 +86,21 @@ def score(name, split="test_eval"):
     # per-event macro-F1
     rep["per_event_macro_f1"] = {ev: classification_report(g.label.values, np.array(cats)[g.index.values], n_boot=1)[0]["macro_f1"]
                                  for ev, g in df.reset_index(drop=True).groupby("event")}
-    per.to_csv(R / f"{name}_per_class.csv"); cm.to_csv(R / f"{name}_confusion.csv")
-    json.dump(rep, open(R / f"{name}.json", "w"), indent=2)
+    per.to_csv(R / f"{name}{tag}_per_class.csv"); cm.to_csv(R / f"{name}{tag}_confusion.csv")
+    json.dump(rep, open(R / f"{name}{tag}.json", "w"), indent=2)
     return rep
 
+def ids_of(name, split="test_eval"):
+    return {json.loads(l)["id"] for l in open(P / f"{name}__{split}.jsonl", encoding="utf-8") if json.loads(l).get("raw")}
+
 if __name__ == "__main__":
+    # usage: score.py name ...            -> full eval subset
+    #        score.py --common a,b,c      -> each of a,b,c scored on the ids ALL of them answered (tag "__common")
+    if sys.argv[1] == "--common":
+        names = sys.argv[2].split(","); common = set.intersection(*[ids_of(n) for n in names]); print("common ids:", len(common))
+        for n in names:
+            r = score(n, restrict=common, tag="__common"); print(n, round(r["macro_f1"], 4), round(r["weighted_f1"], 4))
+        sys.exit()
     for n in sys.argv[1:]:
         r = score(n)
         print(n, json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items() if k != "per_event_macro_f1"}))

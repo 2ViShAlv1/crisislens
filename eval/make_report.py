@@ -69,5 +69,25 @@ def main(pairs):
     ax.set_title("Recall on life-critical classes", loc="left", color=INK); ax.legend(frameon=False, loc="lower right", fontsize=8)
     ax.grid(axis="x", color="#ecebe7"); fig.tight_layout(); fig.savefig(A / "2_life_critical_recall.png", dpi=150); plt.close(fig)
 
+def per_class_chart(a, b, la, lb):
+    """per-class F1 of two systems (2 series)"""
+    fa, fb = R / f"{a}_per_class.csv", R / f"{b}_per_class.csv"
+    if not (fa.exists() and fb.exists()): return
+    A_, B_ = pd.read_csv(fa, index_col=0), pd.read_csv(fb, index_col=0)
+    cls = list(A_.index); y = range(len(cls)); h = 0.38
+    fig, ax = plt.subplots(figsize=(7.5, 5.2))
+    ax.barh([i - h / 2 for i in y], A_.f1, height=h, color=S1, label=la)
+    ax.barh([i + h / 2 for i in y], B_.f1, height=h, color=S2, label=lb)
+    for i, (u, v) in enumerate(zip(A_.f1, B_.f1)):
+        ax.text(u + 0.01, i - h / 2, f"{u:.2f}", va="center", fontsize=7.5, color=INK); ax.text(v + 0.01, i + h / 2, f"{v:.2f}", va="center", fontsize=7.5, color=INK)
+    ax.set_yticks(list(y), [f"{c}  (n={int(n)})" for c, n in zip(cls, A_.support)], fontsize=8); ax.invert_yaxis(); ax.set_xlim(0, 1.08)
+    ax.set_xlabel("F1 (gold labels)"); ax.set_title("Per-class F1 on 4 held-out disasters", loc="left", color=INK)
+    ax.legend(frameon=False, loc="lower right", fontsize=8); ax.grid(axis="x", color="#ecebe7")
+    fig.tight_layout(); fig.savefig(A / "5_per_class_f1.png", dpi=150); plt.close(fig)
+
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    args = [x for x in sys.argv[1:] if not x.startswith("--perclass=")]
+    main(args)
+    pc = [x.split("=", 1)[1] for x in sys.argv[1:] if x.startswith("--perclass=")]
+    if pc:
+        a, b = pc[0].split(","); per_class_chart(a, b, "CrisisLens (fine-tuned)", "TF-IDF + LR")
