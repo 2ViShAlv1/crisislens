@@ -1,0 +1,11 @@
+data/raw/
+data/interim/
+data/processed/*.parquet
+data/processed/*.jsonl
+data/processed/*.csv
+!data/processed/README.md
+.env
+*.tar.gz
+models/
+__pycache__/
+.venv/
