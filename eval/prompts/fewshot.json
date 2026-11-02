@@ -1,0 +1,12 @@
+[
+ {"id": "ab564d77134e8cc3", "event": "hurricane_maria_2017",
+  "out": {"category": "requests_or_urgent_needs", "actionable": true, "urgency": 5, "location": "Puerto Rico", "needs": ["food", "water", "shelter", "sanitation"], "rationale": "Direct appeal: people starving without water, shelter or sanitation."}},
+ {"id": "ebdca7cb963eecf7", "event": "sri_lanka_floods_2017",
+  "out": {"category": "injured_or_dead_people", "actionable": true, "urgency": 4, "location": "Sri Lanka", "needs": ["medical"], "rationale": "Reports 177 deaths and dengue risk for survivors."}},
+ {"id": "9507556dccbac48e", "event": "hurricane_florence_2018",
+  "out": {"category": "sympathy_and_support", "actionable": false, "urgency": 1, "location": null, "needs": [], "rationale": "Thoughts and prayers only; no actionable information."}},
+ {"id": "e1cc8730620f801f", "event": "hurricane_irma_2017",
+  "out": {"category": "caution_and_advice", "actionable": true, "urgency": 3, "location": "SE GA", "needs": ["information"], "rationale": "Storm-surge forecast and flooding warning for a named area."}},
+ {"id": "6b3e5e5d186406a3", "event": "hurricane_irma_2017",
+  "out": {"category": "displaced_people_and_evacuations", "actionable": true, "urgency": 4, "location": null, "needs": ["evacuation"], "rationale": "Announces timing of evacuation orders and routes."}}
+]
