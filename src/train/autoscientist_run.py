@@ -60,11 +60,16 @@ def poll(c, a):
 
 def download(c, a):
     out = ROOT / "models" / a.run; out.mkdir(parents=True, exist_ok=True)
-    tgz = out / "checkpoint.tar.gz"
+    tgz = out / "checkpoint.tar.zst"  # platform serves a zstd-compressed tar
     resp = c.autoscientist.with_streaming_response.download(a.run)
     with resp as r, open(tgz, "wb") as fh:
         for chunk in r.iter_bytes(): fh.write(chunk)
-    with tarfile.open(tgz) as t: t.extractall(out, filter="data")
+    import zstandard
+    with open(tgz, "rb") as fh:
+        tarfile.open(fileobj=zstandard.ZstdDecompressor().stream_reader(fh), mode="r|").extractall(out, filter="data")
+    import shutil
+    if (out / "trainer_state.json").exists():
+        shutil.copy(out / "trainer_state.json", LOG / f"{a.run}_trainer_state.json")
     print("extracted", [p.name for p in out.rglob("*")][:30])
 
 if __name__ == "__main__":
