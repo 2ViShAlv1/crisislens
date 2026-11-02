@@ -12,3 +12,4 @@
 | 01:10 | 0:55 | Keys in. Live AutoScientist model list differs from docs: sub-10B = Qwen3.5-2B/4B/9B, Qwen3-4B-Base, Gemma-3-4B-pt. Together key → 401; HF Inference Providers → 402 (no credits). Alarm rung. |
 | 01:20 | 1:05 | Teacher probe: deepseek-v4-flash / gemma-4-31b-it / glm-5.2 agree closely; qwen3.5-397b burns budget on reasoning. Chose gemma-4-31b-it (fastest, ~$1.5 total). |
 | 01:40 | 1:25 | Hit Adaption per-user inference rate limit (429). Switched teacher to 20 posts/request + global back-off: ~6 rows/s. llama.cpp download blocked by permission classifier (needs user OK). |
+| 02:05 | 1:50 | Test/val silver labels done (1,218 / 574). Teacher verification on 100 rows (independent Claude review, NOT human): actionable 97%, urgency ±1 100%, location 94%, needs 96%, all-fields 89%. Main teacher error: missing a written location (5/6). 17.3k train rows labelling (~40 min). |

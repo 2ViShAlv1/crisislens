@@ -1,0 +1,11 @@
+{
+  "reviewer_file": "eval/human_check/verify_sheet_claude.csv",
+  "n": 100,
+  "agree_actionable": 0.97,
+  "agree_urgency": 1.0,
+  "agree_location": 0.94,
+  "agree_needs": 0.96,
+  "all_fields_agree": 0.89,
+  "all_fields_agree_sft_select": 0.9,
+  "all_fields_agree_test_eval": 0.88
+}
