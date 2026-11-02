@@ -93,7 +93,8 @@ def feed_step(state, event):
 
 with gr.Blocks(title="CrisisLens", theme=gr.themes.Soft()) as demo:
     gr.Markdown("# 🛰️ CrisisLens — disaster-response triage LLM\nFine-tuned with **AutoScientist** (Adaption Labs) on HumAID. "
-                "Evaluated on 4 disasters never seen in training.")
+                "Evaluated on 4 disasters never seen in training (Kerala floods 2018, Cyclone Idai 2019, Mexico earthquake 2017, Hurricane Dorian 2019).\n\n"
+                "<small>Posts: HumAID (Alam et al., ICWSM 2021), CC BY-NC-SA 4.0. Decision support only — a human reviews every item.</small>")
     with gr.Tab("Analyze a post"):
         inp = gr.Textbox(lines=4, label="Social-media post", placeholder="e.g. 3 families trapped on a rooftop near Aluva, water rising, need boats")
         btn = gr.Button("Triage", variant="primary")
