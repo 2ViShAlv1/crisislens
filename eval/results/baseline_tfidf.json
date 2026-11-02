@@ -1,0 +1,33 @@
+{
+  "model": "tfidf_logreg",
+  "C": 2,
+  "val_macro_f1": 0.7410138526103245,
+  "test_full": {
+    "n": 21527,
+    "macro_f1": 0.6520091436589913,
+    "weighted_f1": 0.7004481540857126,
+    "accuracy": 0.6886235889812793,
+    "invalid_rate": 0.0,
+    "recall_requests_or_urgent_needs": 0.5323741007194245,
+    "recall_injured_or_dead_people": 0.8261261261261261,
+    "macro_f1_ci95": [
+      0.6295940828616554,
+      0.6736636492423371
+    ],
+    "latency_ms_per_post": 0.3973567659221756
+  },
+  "test_eval": {
+    "n": 1219,
+    "macro_f1": 0.6617270762196091,
+    "weighted_f1": 0.7199491323578193,
+    "accuracy": 0.70467596390484,
+    "invalid_rate": 0.0,
+    "recall_requests_or_urgent_needs": 0.54,
+    "recall_injured_or_dead_people": 0.7872340425531915,
+    "macro_f1_ci95": [
+      0.6230121331989513,
+      0.6926888764548383
+    ],
+    "latency_ms_per_post": 0.34723281378192533
+  }
+}

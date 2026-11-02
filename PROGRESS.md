@@ -8,3 +8,4 @@
 | 00:35 | 0:20 | Clean data: 49,417 train / 5,491 val / 21,527 test (held-out events: Kerala floods, Cyclone Idai, Mexico EQ, Hurricane Dorian). Exact + near-dup (cos>=0.9) dedupe; 15 train rows overlapping test removed. 10 classes present (no dont_know in this release). |
 | 00:45 | 0:30 | SFT selection 17,786 rows (cap 2k/class). LLM eval subset 1,219 (300/event + all 19 missing_or_found). Prompt/schema, teacher labeler, inference harness written. TF-IDF baseline training. |
 | 00:50 | 0:35 | **BLOCKED**: waiting for ADAPTION_API_KEY (+ HF_TOKEN, optional TOGETHER_API_KEY) in .env. Alarm rung 00:27. |
+| 00:55 | 0:40 | TF-IDF+LR baseline (C=2): full test macro-F1 0.652 / weighted-F1 0.700; eval subset macro-F1 0.662; urgent-needs recall 0.53, injured/dead recall 0.83. Val (in-event) macro-F1 0.741 → event shift costs ~9 pts. |
