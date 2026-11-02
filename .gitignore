@@ -10,3 +10,4 @@ models/
 __pycache__/
 .venv/
 logs_*.txt
+tools/
