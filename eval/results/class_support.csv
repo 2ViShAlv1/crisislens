@@ -1,0 +1,11 @@
+label,train,val,test
+caution_and_advice,3381,376,1632
+displaced_people_and_evacuations,2774,308,915
+infrastructure_and_utility_damage,5876,653,1632
+injured_or_dead_people,5573,619,1110
+missing_or_found_people,305,34,19
+not_humanitarian,4362,485,1448
+other_relevant_information,8302,923,2915
+requests_or_urgent_needs,1481,164,973
+rescue_volunteering_or_donation_effort,11827,1314,8133
+sympathy_and_support,5536,615,2750

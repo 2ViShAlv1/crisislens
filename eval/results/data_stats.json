@@ -1,0 +1,16 @@
+{
+  "dp_vs_paper_event_agreement": 0.9998823283301083,
+  "raw_rows": 76484,
+  "rows_with_retweet_prefix": 11082,
+  "dropped_too_short": 3,
+  "train_label_conflict_keys_dropped": 0,
+  "test_label_conflict_keys_dropped": 0,
+  "dupes_removed": 3,
+  "train_rows_removed_exact_overlap_test": 8,
+  "near_dupes_removed_train": 12,
+  "near_dupes_removed_test": 16,
+  "train_rows_removed_near_dup_of_test": 7,
+  "train_rows": 49417,
+  "val_rows": 5491,
+  "test_rows": 21527
+}
