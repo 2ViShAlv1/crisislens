@@ -1,0 +1,2 @@
+system,key,macro_f1,ci_lo,ci_hi,weighted_f1,recall_urgent_needs,recall_injured_dead,json_valid,latency_s,usd_per_1k,n
+TF-IDF+LR,tfidf,0.6617270762196091,0.6230121331989513,0.6926888764548383,0.7199491323578193,0.54,0.7872340425531915,,0.0003472328137819253,,1219
