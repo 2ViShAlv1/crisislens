@@ -20,9 +20,13 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 def launch(c, a):
-    up = c.datasets.upload_file(a.csv, name=a.name, processing_mode="raw",
-                                column_mapping={"prompt": "prompt", "completion": "completion"})
-    ds = up.dataset_id; print("dataset", ds, flush=True)
+    if a.dataset:
+        ds = a.dataset
+    else:
+        up = c.datasets.upload_file(a.csv, name=a.name, processing_mode="raw",
+                                    column_mapping={"prompt": "prompt", "completion": "completion"})
+        ds = up.dataset_id
+    print("dataset", ds, flush=True)
     while True:
         st = c.datasets.get_status(ds)
         if st.status == "failed": raise SystemExit(f"dataset failed: {dump(st)}")
@@ -34,8 +38,8 @@ def launch(c, a):
         rec = dump(c.autoscientist.recommend_hyperparams(dataset_id=ds, model=a.model)); print("recommended", rec, flush=True)
     except Exception as e:
         print("recommend failed", repr(e)[:300])
+    # column_mapping omitted: raw-mode ingestion canonicalises the columns, AutoScientist infers the mapping
     kw = dict(dataset_id=ds, model=a.model, training_method="instruction", data_format="chat",
-              column_mapping={"prompt": "prompt", "completion": "completion"},
               max_iterations=a.max_iterations, idempotency_key=a.name)
     if a.target: kw["target_win_rate"] = a.target
     run = c.autoscientist.create(**kw)
@@ -67,7 +71,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("cmd")
     ap.add_argument("--csv"); ap.add_argument("--name"); ap.add_argument("--model", default="Qwen/Qwen3.5-9B")
     ap.add_argument("--max-iterations", type=int, default=3); ap.add_argument("--target", type=float)
-    ap.add_argument("--run"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
+    ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
     a = ap.parse_args(); load_env()
     from adaption import Adaption; c = Adaption()
     {"launch": launch, "poll": poll, "download": download}[a.cmd](c, a)
