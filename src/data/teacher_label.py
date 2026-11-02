@@ -34,37 +34,55 @@ TEACHER_SYS = (
     "Category definitions: " + "; ".join(f"{k} = {v}" for k, v in CLASS_DEFS.items())
 )
 
-def label_one(client, model, row):
-    msg = f"Category: {row['label']}\nPost: {row['text']}"
-    for attempt in range(4):
+BATCH_SUFFIX = ("\nYou will receive several posts, each with an id and category. Return ONLY a JSON array with one "
+                "object per post, in the same order, each with keys id, actionable, urgency, location, needs, rationale.")
+PAUSE_UNTIL = [0.0]  # global cool-down after a 429 (shared by all threads)
+
+def _norm(row, o, model, usage=None):
+    rec = {"category": row["label"],
+           "actionable": bool(o["actionable"]),
+           "urgency": int(min(5, max(1, int(o["urgency"])))),
+           "location": (o.get("location") or None),
+           "needs": [str(x).lower() for x in (o.get("needs") or [])][:6],
+           "rationale": " ".join(str(o.get("rationale", "")).split()[:20])}
+    return {"id": row["id"], "label": rec, "teacher": model}
+
+def label_batch(client, model, rows):
+    msg = "\n\n".join(f"id: {r['id']}\nCategory: {r['label']}\nPost: {r['text']}" for r in rows)
+    err = None
+    for attempt in range(8):
+        wait = PAUSE_UNTIL[0] - time.time()
+        if wait > 0: time.sleep(wait)
         try:
-            r = client.responses.create(model=model, instructions=TEACHER_SYS, input=msg,
-                                        temperature=0, max_output_tokens=400)
+            r = client.responses.create(model=model, instructions=TEACHER_SYS + BATCH_SUFFIX, input=msg,
+                                        temperature=0, max_output_tokens=110 * len(rows) + 200)
             txt = r.output_text
-            s = txt[txt.find("{"): txt.rfind("}") + 1]
-            o = json.loads(s)
-            rec = {"category": row["label"],
-                   "actionable": bool(o["actionable"]),
-                   "urgency": int(min(5, max(1, int(o["urgency"])))),
-                   "location": (o.get("location") or None),
-                   "needs": [str(x).lower() for x in (o.get("needs") or [])][:6],
-                   "rationale": " ".join(str(o.get("rationale", "")).split()[:20])}
-            u = getattr(r, "usage", None)
-            return {"id": row["id"], "label": rec, "teacher": model,
-                    "in_tok": getattr(u, "input_tokens", None), "out_tok": getattr(u, "output_tokens", None)}
+            arr = json.loads(txt[txt.find("["): txt.rfind("]") + 1])
+            by_id = {str(o.get("id")): o for o in arr if isinstance(o, dict)}
+            out = []
+            for row in rows:
+                o = by_id.get(row["id"])
+                if o is None: continue
+                try: out.append(_norm(row, o, model))
+                except Exception: pass
+            return out, None
         except Exception as e:  # noqa
-            err = repr(e)[:200]; time.sleep(2 * (attempt + 1))
-    return {"id": row["id"], "error": err}
+            err = repr(e)[:200]
+            if "429" in err or "rate" in err.lower():
+                PAUSE_UNTIL[0] = max(PAUSE_UNTIL[0], time.time() + 61)
+            else:
+                time.sleep(2 * (attempt + 1))
+    return [], err
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("inp"); ap.add_argument("out")
     ap.add_argument("--model", default="qwen3.5-397b"); ap.add_argument("--limit", type=int)
-    ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--workers", type=int, default=4); ap.add_argument("--batch", type=int, default=15)
     a = ap.parse_args()
     load_env()
     from adaption import Adaption
-    client = Adaption()
+    client = Adaption(max_retries=0, timeout=180)
     df = pd.read_parquet(a.inp)
     if a.limit: df = df.head(a.limit)
     done = set()
@@ -74,16 +92,18 @@ def main():
             if "label" in j: done.add(j["id"])
     todo = df[~df.id.isin(done)].to_dict("records")
     print(f"{len(done)} done, {len(todo)} to label with {a.model}", flush=True)
-    lock = threading.Lock(); n_err = 0; t0 = time.time()
+    lock = threading.Lock(); n_err = 0; n_ok = 0; t0 = time.time()
+    batches = [todo[i:i + a.batch] for i in range(0, len(todo), a.batch)]
     with open(a.out, "a", encoding="utf-8") as f, ThreadPoolExecutor(a.workers) as ex:
-        futs = [ex.submit(label_one, client, a.model, r) for r in todo]
+        futs = [ex.submit(label_batch, client, a.model, b) for b in batches]
         for i, fu in enumerate(as_completed(futs), 1):
-            res = fu.result()
+            res, err = fu.result()
             with lock:
-                if "error" in res: n_err += 1
-                else: f.write(json.dumps(res, ensure_ascii=False) + "\n"); f.flush()
-            if i % 200 == 0 or i == len(todo):
-                print(f"{i}/{len(todo)} errors={n_err} {i / (time.time() - t0):.1f}/s", flush=True)
+                for r in res: f.write(json.dumps(r, ensure_ascii=False) + "\n")
+                f.flush(); n_ok += len(res)
+                if err: n_err += 1; print("batch error:", err, flush=True)
+            if i % 10 == 0 or i == len(batches):
+                print(f"batches {i}/{len(batches)} rows_ok={n_ok} batch_errors={n_err} {n_ok / (time.time() - t0):.1f} rows/s", flush=True)
 
 if __name__ == "__main__":
     main()

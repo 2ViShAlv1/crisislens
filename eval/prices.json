@@ -1,0 +1,7 @@
+{
+  "_note": "USD (Adaption credits) per 1M tokens. Adaption hosted prices from docs.adaptionlabs.ai/inference-stacks/models (fetched 2026-11-03).",
+  "qwen3.5-397b": {"in": 0.55, "out": 3.50, "source": "Adaption hosted"},
+  "gemma-4-31b-it": {"in": 0.09, "out": 0.34, "source": "Adaption hosted"},
+  "glm-5.2": {"in": 0.104, "out": 4.40, "source": "Adaption hosted"},
+  "deepseek-v4-flash": {"in": 0.04444, "out": 0.13332, "source": "Adaption hosted"}
+}
