@@ -1,0 +1,188 @@
+1
+00:00:00,400 --> 00:00:07,400
+CrisisLens: disaster triage with a small AI model, trained with Adaption Labs AutoScientist.
+
+2
+00:00:08,050 --> 00:00:13,495
+When a disaster strikes, response teams are flooded with thousands of social-media posts.
+
+3
+00:00:13,495 --> 00:00:17,519
+Hidden among them are people asking for rescue, water, or medicine.
+
+4
+00:00:17,519 --> 00:00:20,402
+Reading every post by hand is far too slow.
+
+5
+00:00:21,052 --> 00:00:27,336
+CrisisLens reads each post and returns a strict JSON triage record: the humanitarian category,
+
+6
+00:00:27,336 --> 00:00:32,929
+whether it is actionable, an urgency score from one to five, the location, the needs,
+
+7
+00:00:32,929 --> 00:00:34,676
+and a short rationale.
+
+8
+00:00:35,326 --> 00:00:37,793
+This is the CrisisLens triage console.
+
+9
+00:00:37,793 --> 00:00:43,262
+It replays real posts from four disasters that the model never saw during training.
+
+10
+00:00:43,912 --> 00:00:49,190
+As posts arrive, each triage record joins a priority queue ranked by urgency,
+
+11
+00:00:49,190 --> 00:00:52,082
+so the most critical posts rise to the top.
+
+12
+00:00:52,082 --> 00:00:58,232
+The dashboard tracks volume, actionable posts, life-safety posts, and the category mix.
+
+13
+00:00:58,882 --> 00:01:04,682
+Responders can filter the queue to critical posts only, with urgency four or higher.
+
+14
+00:01:05,332 --> 00:01:10,590
+Selecting a post opens its full record, with the location, needs, rationale,
+
+15
+00:01:10,590 --> 00:01:13,604
+and the model's latency on a laptop CPU.
+
+16
+00:01:14,254 --> 00:01:16,819
+The Analyze tab triages a single post.
+
+17
+00:01:16,819 --> 00:01:22,593
+Here, families trapped by flood water are flagged as an urgent, life-threatening request,
+
+18
+00:01:22,593 --> 00:01:25,358
+with the location and needs extracted.
+
+19
+00:01:26,008 --> 00:01:31,248
+A hospital running out of insulin and power is marked actionable, with medical, water,
+
+20
+00:01:31,248 --> 00:01:32,504
+and power needs.
+
+21
+00:01:33,154 --> 00:01:39,818
+And a message of sympathy is correctly given the lowest urgency, so it does not distract responders.
+
+22
+00:01:40,468 --> 00:01:46,205
+The model was trained on HumAID: 76,484 human-labelled tweets from 19 disasters.
+
+23
+00:01:46,205 --> 00:01:49,940
+We removed duplicates and split the data by disaster.
+
+24
+00:01:49,940 --> 00:01:56,704
+Four disasters were held out completely: the Kerala floods, Cyclone Idai, the Mexico earthquake,
+
+25
+00:01:56,704 --> 00:01:58,484
+and Hurricane Dorian.
+
+26
+00:01:59,134 --> 00:02:03,978
+We fine-tuned Qwen 3.5 2B with LoRA, using Adaption Labs AutoScientist.
+
+27
+00:02:03,978 --> 00:02:08,789
+The default recipe failed, so we fixed the prompt and the learning rate,
+
+28
+00:02:08,789 --> 00:02:12,230
+and AutoScientist then tuned the recipe itself.
+
+29
+00:02:12,880 --> 00:02:17,588
+In total we ran eight AutoScientist training runs, testing 2, 4,
+
+30
+00:02:17,588 --> 00:02:22,712
+and 9 billion parameter models and up to 49 thousand training rows.
+
+31
+00:02:23,362 --> 00:02:25,148
+Run five is our best model.
+
+32
+00:02:25,148 --> 00:02:30,457
+It shares the top validation score, and it is the model we evaluated on the test set.
+
+33
+00:02:30,457 --> 00:02:34,442
+The test set was used only once, so the results are honest.
+
+34
+00:02:35,092 --> 00:02:43,630
+On 1,219 posts from the unseen disasters, CrisisLens reaches a macro-F1 of 0.715.
+
+35
+00:02:43,630 --> 00:02:51,130
+The best frontier API model reaches 0.606, a classic TF-IDF model 0.662,
+
+36
+00:02:51,130 --> 00:02:55,388
+and the untuned base model only 0.427.
+
+37
+00:02:56,038 --> 00:03:01,207
+For urgent requests for help, CrisisLens finds 76 percent of them.
+
+38
+00:03:01,207 --> 00:03:04,502
+The frontier API finds only 32 percent.
+
+39
+00:03:05,152 --> 00:03:10,045
+It is also practical: 99.9 percent of its outputs are valid JSON,
+
+40
+00:03:10,045 --> 00:03:15,728
+and it runs on a laptop CPU in about five seconds per post, at zero cost.
+
+41
+00:03:16,378 --> 00:03:18,316
+We are open about its limits.
+
+42
+00:03:18,316 --> 00:03:22,816
+Its most common mistake is treating donation offers as urgent requests.
+
+43
+00:03:22,816 --> 00:03:27,950
+The hosted demo replays recorded outputs, because live hosting needs a paid plan.
+
+44
+00:03:27,950 --> 00:03:29,834
+Live triage runs locally.
+
+45
+00:03:30,484 --> 00:03:36,042
+CrisisLens: a small, free model that beats frontier APIs at disaster triage.
+
+46
+00:03:36,042 --> 00:03:39,418
+The demo, the model, and all the code are open.
+
+47
+00:03:39,418 --> 00:03:40,436
+Thank you.
+
