@@ -35,6 +35,7 @@ Candidates are compared on `val_eval` (574 posts, 60 per class, drawn from the 1
 
 | run   | base       | training rows         | prompt   |   AutoScientist best win-rate |   val macro-F1 |   val weighted-F1 | val JSON valid   | selected   |
 |:------|:-----------|:----------------------|:---------|------------------------------:|---------------:|------------------:|:-----------------|:-----------|
+| #7    | Qwen3.5-2B | 37,267 (cap 5k/class) | v2       |                         0.913 |          0.793 |             0.789 | 100.0%           |            |
 | #5    | Qwen3.5-2B | 17,784 (cap 2k/class) | v2       |                         0.923 |          0.791 |             0.787 | 100.0%           | ✅         |
 
 Win-rate is AutoScientist's judge score against each run's own base model. It is useful for steering a run, but it does not rank models by triage accuracy, which is why selection uses the validation metric.
