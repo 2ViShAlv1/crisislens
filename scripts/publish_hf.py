@@ -26,7 +26,15 @@ space_readme = ("---\ntitle: CrisisLens\nemoji: 🛰️\ncolorFrom: blue\ncolorT
                 "CrisisLens — disaster-response triage LLM (Qwen3.5-2B + LoRA trained with Adaption AutoScientist on HumAID). "
                 "Runs on free CPU via llama.cpp; falls back to cached outputs if the model is still loading.\n")
 api.upload_file(path_or_fileobj=space_readme.encode(), path_in_repo="README.md", repo_id=space_repo, repo_type="space")
-api.upload_folder(folder_path=str(ROOT / "demo"), repo_id=space_repo, repo_type="space", ignore_patterns=["__pycache__/*"])
+# Stage demo/ with LF line endings: a CRLF start.sh/Dockerfile from a Windows checkout breaks the Linux container.
+import shutil, tempfile
+stage = Path(tempfile.mkdtemp()) / "demo"
+shutil.copytree(ROOT / "demo", stage, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+for p in stage.rglob("*"):
+    if p.is_file() and (p.suffix in {".sh", ".py", ".txt", ".html", ".css", ".js", ".json", ".jsonl", ".md"} or p.name == "Dockerfile"):
+        b = p.read_bytes()
+        if b"\r\n" in b: p.write_bytes(b.replace(b"\r\n", b"\n"))
+api.upload_folder(folder_path=str(stage), repo_id=space_repo, repo_type="space")
 links = {"model": f"https://huggingface.co/{model_repo}", "space": f"https://huggingface.co/spaces/{space_repo}"}
 try:
     links["github"] = subprocess.check_output(["gh", "repo", "view", "--json", "url", "-q", ".url"], cwd=ROOT, text=True).strip()
