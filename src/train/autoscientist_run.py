@@ -50,6 +50,8 @@ def launch(c, a):
               max_iterations=a.max_iterations, idempotency_key=a.name)
     if a.target: kw["target_win_rate"] = a.target
     if a.hp: kw["hyperparams"] = json.loads(a.hp)
+    if a.aug_domain: kw["augmentation_domain_rows"] = a.aug_domain    # docs: data augmentation (optional)
+    if a.aug_general: kw["augmentation_general_rows"] = a.aug_general
     run = c.autoscientist.create(**kw)
     meta = {"t": now(), "name": a.name, "csv": a.csv, "dataset_id": ds, "rows": st.row_count, "request": kw,
             "recommended_hyperparams": rec, "run": dump(run)}
@@ -108,6 +110,7 @@ if __name__ == "__main__":
     ap.add_argument("--csv"); ap.add_argument("--name"); ap.add_argument("--model", default="Qwen/Qwen3.5-9B")
     ap.add_argument("--max-iterations", type=int, default=3); ap.add_argument("--target", type=float)
     ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--hp"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true"); ap.add_argument("--fresh", action="store_true")
+    ap.add_argument("--aug-domain", type=int); ap.add_argument("--aug-general", type=int)
     a = ap.parse_args(); load_env()
     import httpx; from adaption import Adaption
     c = Adaption(timeout=httpx.Timeout(900.0, connect=30.0))  # 32 MB CSV uploads time out at the default write timeout

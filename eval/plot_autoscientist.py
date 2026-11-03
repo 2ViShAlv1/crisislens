@@ -17,6 +17,7 @@ RUNS = {  # run id -> label (fixed order = fixed colour)
     "fafc81b1-8876-43c1-80e9-75a1791d676c": "#6 4B · 17.8k · v2 · run #5 recipe",
     "2b634ded-e0b7-4a21-9467-bf4025b0bcc1": "#7 2B · 37k (cap 5k) · v2 · run #5 recipe",
     "fab5f195-3c03-4f96-ac63-fb31f6693054": "#8 2B · 49k (all) · v2 · 2 epochs",
+    "e70d8d4e-af9a-4885-9681-95352a211b2e": "#9 2B · 17.8k + augmentation (2.2k domain, 8k general) · v2",
 }
 PAL = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]  # dataviz slots 1-8, fixed order
 INK, INK2, SURF = "#0b0b0b", "#52514e", "#fcfcfb"

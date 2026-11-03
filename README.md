@@ -162,6 +162,16 @@ A web console for a response desk, served from a Docker Space (llama.cpp + FastA
 
 The UI starts immediately and loads the model in the background. If the model is unavailable, known posts fall back to cached evaluation outputs and the page says so.
 
+## AutoScientist Community Leaderboard
+
+Runs appear on the [AutoScientist leaderboard](https://adaptionlabs.ai/auto-scientist-leaderboard) automatically. Our listed entry (as of 2026-11-03) is run #2 (`adaption_qwen3_5_2b_crisislens_full_2b_2c060ec8`), domain **News**:
+
+| Task Win % | Domain Win % | Normalised Score | Percentile |
+|---|---|---|---|
+| 91.8% | 55% | +0.13 | 36th |
+
+The task win-rate is high, but the domain win-rate is only 55%: specialising on triage barely beats the base model on general News-domain evaluations. AutoScientist's documented fix is `augmentation_general_rows`, which adds general rows "to help the model keep broader capabilities". **Run #9** uses run #5's data and recipe plus augmentation (`augmentation_domain_rows=2216` to reach the recommended 20k, `augmentation_general_rows=8000`). It was launched after the submission write-up, and its results are in `eval/autoscientist/e70d8d4e-*.jsonl`.
+
 ## Honest notes: what went wrong and what is not claimed
 
 - **The pilot model failed.** AutoScientist's default recipe (lr 1e-5, 1 epoch, 21 steps) produced invented labels ("relief", urgency "high"): 0% accuracy on a 69-post probe. The fix was to list the label set in the prompt (v2) and override lr and epochs (run #5).
