@@ -1,0 +1,39 @@
+{
+  "n": 815,
+  "macro_f1": 0.6085854483091533,
+  "weighted_f1": 0.6692477493129356,
+  "accuracy": 0.6613496932515337,
+  "invalid_rate": 0.0,
+  "recall_requests_or_urgent_needs": 0.2647058823529412,
+  "recall_injured_or_dead_people": 0.7142857142857143,
+  "macro_f1_ci95": [
+    0.5659745658022367,
+    0.6467109089385379
+  ],
+  "json_valid_rate": 1.0,
+  "json_parse_rate": 1.0,
+  "missing_preds": 0,
+  "latency_s_mean": 2.136332617546171,
+  "latency_s_p50": 1.8604029999987688,
+  "latency_s_p95": 4.2821925000054755,
+  "in_tok_mean": 576.9386503067485,
+  "out_tok_mean": 291.4245398773006,
+  "usd_per_1k_posts": 0.06449187327607361,
+  "price_source": "Adaption hosted",
+  "silver_n": 815,
+  "silver_n_parsed": 815,
+  "actionable_acc": 0.8748466257668711,
+  "actionable_f1": 0.6046511627906976,
+  "urgency_mae": 0.3803680981595092,
+  "urgency_within1": 0.9668711656441717,
+  "urgent_ge4_f1": 0.671875,
+  "location_exact": 0.8134969325153374,
+  "location_overlap": 0.8723926380368098,
+  "needs_jaccard": 0.7583640081799592,
+  "per_event_macro_f1": {
+    "cyclone_idai_2019": 0.6234277541968444,
+    "hurricane_dorian_2019": 0.4630874724915205,
+    "kerala_floods_2018": 0.5537425785513492,
+    "mexico_earthquake_2017": 0.51068473706753
+  }
+}
