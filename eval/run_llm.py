@@ -39,7 +39,8 @@ def main():
         tr = pd.read_parquet(ROOT / "data/processed/train.parquet").set_index("id")
         shots = [dict(s, text=tr.loc[s["id"], "text"]) for s in json.load(open(ROOT / "eval/prompts/fewshot.json"))]
     out = ROOT / f"eval/preds/{a.name}__{a.split}.jsonl"; out.parent.mkdir(exist_ok=True)
-    done = {json.loads(l)["id"] for l in open(out, encoding="utf-8")} if out.exists() else set()
+    # resume: only rows with an actual model output count as done; transport errors (raw=None) are retried
+    done = {j["id"] for j in map(json.loads, open(out, encoding="utf-8")) if j.get("raw") is not None} if out.exists() else set()
     todo = df[~df.id.isin(done)].to_dict("records")
     print(f"{a.name}: {len(done)} done, {len(todo)} todo", flush=True)
     if a.backend == "adaption":

@@ -96,6 +96,12 @@ def ids_of(name, split="test_eval"):
 if __name__ == "__main__":
     # usage: score.py name ...            -> full eval subset
     #        score.py --common a,b,c      -> each of a,b,c scored on the ids ALL of them answered (tag "__common")
+    #        score.py --split val_eval a b    -> model SELECTION split (val, training events); tag "__val_eval"
+    if sys.argv[1] == "--split":
+        sp = sys.argv[2]
+        for n in sys.argv[3:]:
+            r = score(n, split=sp, tag=f"__{sp}"); print(n, sp, round(r["macro_f1"], 4), round(r["weighted_f1"], 4), "valid", round(r["json_valid_rate"], 4))
+        sys.exit()
     if sys.argv[1] == "--common":
         names = sys.argv[2].split(","); common = set.intersection(*[ids_of(n) for n in names]); print("common ids:", len(common))
         for n in names:

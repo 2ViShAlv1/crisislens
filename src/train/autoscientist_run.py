@@ -52,7 +52,10 @@ def launch(c, a):
 def poll(c, a):
     f = LOG / f"{a.run}.jsonl"
     while True:
-        r = dump(c.autoscientist.get(a.run))
+        try:
+            r = dump(c.autoscientist.get(a.run))
+        except Exception as e:  # transient network/DNS errors must not end the log
+            print(now(), "poll error (retrying):", type(e).__name__, flush=True); time.sleep(a.every); continue
         with open(f, "a") as fh: fh.write(json.dumps({"t": now(), **r}, default=str) + "\n")
         print(now(), r["status"], f"iter {r.get('iterations_completed')}/{r.get('max_iterations')}",
               "best_win_rate", r.get("best_win_rate"), flush=True)
