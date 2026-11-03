@@ -77,7 +77,23 @@ async function health() {
     el.dataset.state = j.live ? "live" : "cached";
     el.lastElementChild.textContent = j.live ? "Live model online" : "Model offline · cached outputs";
     el.title = j.live ? "Analyze requests run on the fine-tuned model" : `Live model unavailable (${j.reason || "unknown"}); known posts use cached outputs`;
-  } catch (e) { el.dataset.state = "cached"; el.lastElementChild.textContent = "Static mode · cached outputs"; }
+  } catch (e) {
+    S.static = true;
+    el.dataset.state = "cached"; el.lastElementChild.textContent = "Static demo · recorded outputs";
+    el.title = "Hosted as a static page: outputs were recorded from the fine-tuned model during evaluation. Run the model locally for live triage (see README).";
+    const lede = $("#view-analyze .lede");
+    if (lede) lede.textContent = "This hosted demo is static: pick an example (or any post from the triage console) to see the fine-tuned model's recorded output. "
+      + "Live triage of your own text runs locally on a CPU with llama.cpp; see the README (two commands).";
+  }
+}
+// static hosting: answer from outputs the model produced during evaluation (examples + held-out feed)
+function recorded(text) {
+  const t = text.trim();
+  const e = S.examples.find(x => x.text.trim() === t && x.pred);
+  if (e) return { result: e.pred, valid: true, source: "recorded", latency_s: e.latency_s };
+  const f = S.feed.find(x => x.text.trim() === t);
+  if (f) return { result: f.pred, valid: true, source: "recorded", latency_s: f.latency_s };
+  return null;
 }
 
 // ---------- tabs / theme ----------
@@ -238,11 +254,18 @@ async function analyze() {
   box.replaceChildren(h("div", { class: "thinking" }, h("div", { class: "spinner" }), h("div", {}, "Running the fine-tuned model on CPU… ", el),
     h("div", { style: "width:70%;display:grid;gap:8px" }, h("div", { class: "skel" }), h("div", { class: "skel", style: "width:70%" }), h("div", { class: "skel", style: "width:85%" }))));
   try {
+    if (S.static) {
+      const hit = recorded(text);
+      if (hit) { renderResult(hit); return; }
+      throw new Error("This hosted demo is static, so only recorded outputs are available. Pick one of the examples, or run CrisisLens locally to triage new text (README → Demo).");
+    }
     const r = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.detail || `Request failed (${r.status})`);
     renderResult(j);
   } catch (e) {
+    const hit = recorded(text);  // e.g. static host answered 404/405 before the health check finished
+    if (hit) { renderResult(hit); return; }
     box.replaceChildren(h("div", { class: "err" }, h("b", { text: "Could not triage this post. " }), e.message));
   } finally { clearInterval(tick); busy = false; $("#runBtn").disabled = false; }
 }
@@ -263,7 +286,9 @@ function renderResult(j) {
     h("div", { class: "r-foot" },
       j.source === "live"
         ? h("span", { class: "src-badge" }, h("i"), `Live model · ${j.latency_s.toFixed(2)} s on CPU`)
-        : h("span", { class: "src-badge cached", title: j.note || "" }, h("i"), "Cached output from evaluation (live model unavailable)"),
+        : h("span", { class: "src-badge cached", title: j.note || "" }, h("i"), j.source === "recorded"
+            ? `Recorded output of the fine-tuned model${j.latency_s ? ` (${Number(j.latency_s).toFixed(1)} s on a laptop CPU)` : ""}`
+            : "Cached output from evaluation (live model unavailable)"),
       copy),
     h("details", {}, h("summary", { text: "Raw JSON record" }), h("pre", { class: "json", text: json })),
   );

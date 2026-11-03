@@ -7,7 +7,7 @@ and served for **$0 on a CPU** with llama.cpp.
 
 | | |
 |---|---|
-| **Live demo** | https://huggingface.co/spaces/Vishal-2109/crisislens |
+| **Demo (static console)** | https://huggingface.co/spaces/Vishal-2109/crisislens |
 | **Model (LoRA, GGUF + PEFT)** | https://huggingface.co/Vishal-2109/crisislens-qwen3.5-2b-lora |
 | **Code** | https://github.com/2ViShAlv1/crisislens |
 | **Write-ups** | [SUBMISSION.md](SUBMISSION.md) · [Model card](docs/MODEL_CARD.md) · [Data card](docs/DATA_CARD.md) · [Error analysis](docs/ERROR_ANALYSIS.md) · [Build log](PROGRESS.md) |
@@ -153,14 +153,15 @@ cd demo && CRISISLENS_BASE_URL=http://127.0.0.1:8082/v1 uvicorn server:app --por
 
 ## Demo
 
-A web console for a response desk, served from a Docker Space (llama.cpp + FastAPI, free CPU):
+A web console for a response desk. **Hosted version:** a free static Hugging Face Space, because Hugging Face now requires PRO for Docker and Gradio Spaces (our attempt got HTTP 402). It replays the outputs the fine-tuned model produced during evaluation. **Live version:** the same console backed by the model through llama.cpp. Run it locally with the two commands under *Reproduce → 6*, or deploy `demo/` as a Docker Space on a PRO account (`python -I scripts/publish_hf.py --space-only --docker`).
+
 
 - **Triage console.** Replays held-out posts from the four test disasters through the model into a queue ranked by urgency, with KPIs, category mix, top needs, and a detail panel that shows the human (HumAID) label next to the model's answer.
-- **Analyze a post.** Paste any post and get the live JSON record, with latency and whether it came from the live model or the cached outputs.
+- **Analyze a post.** Paste a post and get the JSON record. When run locally this is live; the hosted static demo shows recorded outputs for the example and feed posts.
 - **Evaluation.** Interactive charts of every number in this README.
 - **Model.** The pipeline, the recipe, and the limits.
 
-The UI starts immediately and loads the model in the background. If the model is unavailable, known posts fall back to cached evaluation outputs and the page says so.
+The UI always says where an answer came from: the live model, or a recorded output and its CPU latency.
 
 ## AutoScientist Community Leaderboard
 

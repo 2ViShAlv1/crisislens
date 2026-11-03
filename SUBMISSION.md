@@ -10,6 +10,6 @@
 
 **Evaluation.** 1,219 test posts with human labels, compared against TF-IDF + LR (0.662), two frontier APIs, and the untuned base model (0.427). We report bootstrap CIs, per-class and per-disaster F1, life-critical recall, latency, cost and 15 analysed failures. Most frequent confusion: donation posts escalated to urgent requests.
 
-**Serving.** PEFT → GGUF, served with llama.cpp on CPU. The web console (triage queue, analyzer, evaluation) runs on a free Hugging Face Space.
+**Serving.** PEFT → GGUF, served with llama.cpp on CPU. The web console (triage queue, analyzer, evaluation) runs live locally, and a static version with recorded outputs is hosted on Hugging Face.
 
 Demo: https://huggingface.co/spaces/Vishal-2109/crisislens · Code: https://github.com/2ViShAlv1/crisislens
