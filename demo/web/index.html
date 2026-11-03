@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrisisLens · Disaster triage console</title>
+<meta name="description" content="CrisisLens: a 2B-parameter disaster-response triage model fine-tuned with AutoScientist, evaluated on four disasters it never saw in training.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d03b3b'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='white' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+<script>try{var t=localStorage.getItem("cl-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><circle cx="16" cy="16" r="7" fill="none" stroke="#fff" stroke-width="3"/><circle cx="16" cy="16" r="2.5" fill="#fff"/></svg>
+    <div>
+      <div class="brand-name">CrisisLens</div>
+      <div class="brand-sub">Disaster-response triage</div>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-view="console" aria-selected="true">Triage console</button>
+    <button role="tab" data-view="analyze" aria-selected="false">Analyze a post</button>
+    <button role="tab" data-view="eval" aria-selected="false">Evaluation</button>
+    <button role="tab" data-view="model" aria-selected="false">Model</button>
+  </nav>
+  <div class="top-right">
+    <span id="status" class="status" data-state="checking" title="Model endpoint status"><i aria-hidden="true"></i><span>Checking model…</span></span>
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= TRIAGE CONSOLE ================= -->
+  <section id="view-console" class="view" role="tabpanel">
+    <div class="page-head">
+      <div>
+        <h1>Live triage console</h1>
+        <p class="lede">Real posts from <b>four disasters the model never saw in training</b>, triaged by the fine-tuned model and ranked by urgency, the way a response desk would work them.</p>
+      </div>
+      <div class="controls">
+        <div class="seg" id="eventSeg" role="group" aria-label="Disaster"></div>
+        <div class="playback">
+          <button id="playBtn" class="btn primary"><span class="ico">▶</span><span class="lbl">Start feed</span></button>
+          <label class="sr" for="speed">Speed</label>
+          <select id="speed" class="select" title="Feed speed">
+            <option value="1100">1×</option><option value="450" selected>2.5×</option><option value="150">8×</option>
+          </select>
+          <button id="resetBtn" class="btn ghost">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="console-grid">
+      <div class="panel queue-panel">
+        <div class="panel-head">
+          <h2>Priority queue</h2>
+          <div class="chips" id="queueFilter" role="group" aria-label="Queue filter">
+            <button class="chip-btn on" data-f="all">All</button>
+            <button class="chip-btn" data-f="critical">Urgency ≥ 4</button>
+            <button class="chip-btn" data-f="actionable">Actionable</button>
+            <button class="chip-btn" data-f="life">Life-safety</button>
+          </div>
+        </div>
+        <div id="queue" class="queue" role="list" aria-live="polite"></div>
+        <div id="queueEmpty" class="empty">
+          <div class="empty-ico">▶</div>
+          <div><b>Start the feed</b> to stream held-out posts through the model.</div>
+          <div class="muted">Outputs were produced by the model during evaluation; the human (HumAID) label is shown for comparison.</div>
+        </div>
+      </div>
+      <div class="side-col">
+        <aside class="panel detail" id="detail" aria-label="Selected post">
+          <div class="detail-empty muted">Select a post in the queue to see the full triage record.</div>
+        </aside>
+        <div class="panel">
+          <div class="panel-head"><h2>Category mix</h2><span class="muted small" id="mixN"></span></div>
+          <div id="mix" class="mix"></div>
+          <div class="panel-sub">Top requested needs</div>
+          <div id="needs" class="needs-cloud"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ANALYZE ================= -->
+  <section id="view-analyze" class="view" role="tabpanel" hidden>
+    <div class="page-head">
+      <div>
+        <h1>Analyze a post</h1>
+        <p class="lede">Paste any disaster-time post. The fine-tuned 2B model returns a strict JSON triage record. It runs on a CPU, so expect a few seconds.</p>
+      </div>
+    </div>
+    <div class="analyze-grid">
+      <div class="panel">
+        <label for="postIn" class="field-label">Social-media post</label>
+        <textarea id="postIn" rows="6" maxlength="1200" placeholder="e.g. 3 families trapped on a rooftop near Aluva, water rising, need boats"></textarea>
+        <div class="input-foot">
+          <span class="muted small"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run · <span id="charN">0</span>/1200</span>
+          <button id="runBtn" class="btn primary">Triage post</button>
+        </div>
+        <div class="panel-sub">Try an example</div>
+        <div id="examples" class="examples"></div>
+      </div>
+      <div class="panel result" id="result">
+        <div class="result-empty">
+          <div class="empty-ico">{ }</div>
+          <div><b>The triage record appears here.</b></div>
+          <div class="muted">category · urgency 1–5 · actionable · location · needs · rationale</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EVALUATION ================= -->
+  <section id="view-eval" class="view" role="tabpanel" hidden>
+    <div class="page-head">
+      <div>
+        <h1>Evaluation</h1>
+        <p class="lede" id="evalLede">Gold human labels from HumAID, on four disasters held out of training by <b>event</b>, not by random split. No test post, near-duplicate or event was used for training or model selection.</p>
+      </div>
+    </div>
+    <div class="stat-row" id="heroStats"></div>
+    <div class="eval-grid">
+      <div class="panel span2"><div class="panel-head"><h2>Category macro-F1 · 95% bootstrap CI</h2></div><div class="chart" id="chMacro"></div></div>
+      <div class="panel"><div class="panel-head"><h2>Recall on life-critical classes</h2></div><div class="chart" id="chRecall"></div></div>
+      <div class="panel"><div class="panel-head"><h2>Per-disaster macro-F1</h2></div><div class="chart" id="chEvent"></div></div>
+      <div class="panel span2"><div class="panel-head"><h2>Per-class F1</h2></div><div class="chart" id="chClass"></div></div>
+      <div class="panel"><div class="panel-head"><h2>Structured fields vs teacher (silver) labels</h2></div><div id="silver" class="silver"></div>
+        <p class="note">Category is scored against human gold labels. Actionable / urgency / location / needs are scored against silver labels from a teacher LLM (gemma-4-31b-it) and are reported separately.</p></div>
+      <div class="panel"><div class="panel-head"><h2>AutoScientist iterations</h2></div><div class="chart" id="chIter"></div>
+        <p class="note">Win-rate is AutoScientist's judge score of each iteration against <i>that run's own base model</i>, so it is not comparable across model sizes.</p></div>
+      <div class="panel span2"><div class="panel-head"><h2>All systems</h2><span class="muted small" id="tableNote"></span></div><div class="table-wrap" id="sysTable"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= MODEL ================= -->
+  <section id="view-model" class="view" role="tabpanel" hidden>
+    <div class="page-head"><div><h1>Model</h1><p class="lede">How CrisisLens was built, trained and evaluated, and where it should not be trusted.</p></div></div>
+    <div class="model-grid" id="modelGrid"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Posts: HumAID (Alam et al., ICWSM 2021), CC BY-NC-SA 4.0. Decision support only: a human reviews every item.</span>
+  <span id="genStamp" class="muted"></span>
+</footer>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+{
+ "generated": "2026-11-03 12:51",
+ "model": {
+  "key": "ft2b_run5",
+  "label": "CrisisLens 2B (run #5)",
+  "run_id": "7ebe8824-9857-4552-8574-8b58b3d55be5",
+  "base": "Qwen/Qwen3.5-2B",
+  "train_rows": 17784,
+  "best_win_rate": 0.9227,
+  "hyperparams": {
+   "learning_rate": 0.00015,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "lora_dropout": 0.05,
+   "warmup_ratio": 0.05,
+   "weight_decay": 0.01
+  }
+ },
+ "systems": [
+  {
+   "key": "tfidf",
+   "label": "TF-IDF+LR",
+   "kind": "baseline",
+   "macro_f1": 0.6617270762196091,
+   "ci": [
+    0.6230121331989513,
+    0.6926888764548383
+   ],
+   "weighted_f1": 0.7199491323578193,
+   "recall_urgent": 0.54,
+   "recall_injured": 0.7872340425531915,
+   "json_valid": null,
+   "latency_s": 0.0003472328137819,
+   "usd_per_1k": null,
+   "n": 1219
+  },
+  {
+   "key": "qwen2b_zeroshot",
+   "label": "Qwen3.5-2B base zero-shot",
+   "kind": "baseline",
+   "macro_f1": 0.4269953731005459,
+   "ci": [
+    0.3907154050511017,
+    0.455594416276246
+   ],
+   "weighted_f1": 0.3282446036107269,
+   "recall_urgent": 0.6190476190476191,
+   "recall_injured": 0.8947368421052632,
+   "json_valid": 0.9980638915779284,
+   "latency_s": 11.279888947918502,
+   "usd_per_1k": 0.0,
+   "n": 1033
+  },
+  {
+   "key": "deepseek-v4-flash@zeroshot",
+   "label": "deepseek-v4-flash zero-shot (API)",
+   "kind": "api",
+   "macro_f1": 0.6060910785524517,
+   "ci": [
+    0.5727198483179261,
+    0.6352433437659004
+   ],
+   "weighted_f1": 0.6673085012402751,
+   "recall_urgent": 0.32,
+   "recall_injured": 0.7340425531914894,
+   "json_valid": 0.9983593109105824,
+   "latency_s": 2.1521459958163,
+   "usd_per_1k": 0.0648844415422477,
+   "n": 1219
+  },
+  {
+   "key": "gemma-4-31b-it@zeroshot",
+   "label": "gemma-4-31b-it zero-shot (API)",
+   "kind": "api",
+   "macro_f1": 0.5920994888879394,
+   "ci": [
+    0.5545102672888819,
+    0.6224638582308002
+   ],
+   "weighted_f1": 0.670325232065788,
+   "recall_urgent": 0.26,
+   "recall_injured": 0.6808510638297872,
+   "json_valid": 1.0,
+   "latency_s": 1.0046795931092458,
+   "usd_per_1k": 0.069677046759639,
+   "n": 1219
+  },
+  {
+   "key": "ft2b_run5",
+   "label": "CrisisLens 2B run #5 (AutoScientist)",
+   "kind": "ours",
+   "macro_f1": 0.7149212265236506,
+   "ci": [
+    0.68175485541743,
+    0.743023343551881
+   ],
+   "weighted_f1": 0.7586994615127631,
+   "recall_urgent": 0.76,
+   "recall_injured": 0.9042553191489362,
+   "json_valid": 0.9991796554552912,
+   "latency_s": 5.006485618129618,
+   "usd_per_1k": 0.0,
+   "n": 1219
+  }
+ ],
+ "per_class": {
+  "classes": [
+   "caution_and_advice",
+   "displaced_people_and_evacuations",
+   "infrastructure_and_utility_damage",
+   "injured_or_dead_people",
+   "missing_or_found_people",
+   "not_humanitarian",
+   "other_relevant_information",
+   "requests_or_urgent_needs",
+   "rescue_volunteering_or_donation_effort",
+   "sympathy_and_support"
+  ],
+  "ours": [
+   0.6074,
+   0.8163,
+   0.7727,
+   0.8947,
+   0.8235,
+   0.5696,
+   0.4462,
+   0.5205,
+   0.841,
+   0.8571
+  ],
+  "baseline": [
+   0.5913,
+   0.8261,
+   0.6736,
+   0.8268,
+   0.6429,
+   0.4523,
+   0.4452,
+   0.5294,
+   0.8125,
+   0.8173
+  ],
+  "support": [
+   58,
+   47,
+   94,
+   94,
+   19,
+   63,
+   135,
+   50,
+   503,
+   156
+  ],
+  "baseline_label": "TF-IDF + LR"
+ },
+ "per_event": {
+  "deepseek-v4-flash zero-shot (API)": {
+   "cyclone_idai_2019": 0.5632249202087923,
+   "hurricane_dorian_2019": 0.438661712185671,
+   "kerala_floods_2018": 0.5851605170399861,
+   "mexico_earthquake_2017": 0.5604699495531582
+  },
+  "gemma-4-31b-it zero-shot (API)": {
+   "cyclone_idai_2019": 0.5572791136396571,
+   "hurricane_dorian_2019": 0.4545924179092644,
+   "kerala_floods_2018": 0.5368837316058737,
+   "mexico_earthquake_2017": 0.5568528093634871
+  },
+  "CrisisLens 2B run #5 (AutoScientist)": {
+   "cyclone_idai_2019": 0.6170083830909117,
+   "hurricane_dorian_2019": 0.616484301102383,
+   "kerala_floods_2018": 0.7202422061208462,
+   "mexico_earthquake_2017": 0.6751136560694049
+  }
+ },
+ "silver": {
+  "actionable_acc": 0.9237079573420837,
+  "actionable_f1": 0.753315649867374,
+  "urgency_mae": 0.3601312551271534,
+  "urgency_within1": 0.9696472518457753,
+  "urgent_ge4_f1": 0.7027027027027027,
+  "location_exact": 0.8589007383100903,
+  "location_overlap": 0.911402789171452,
+  "needs_jaccard": 0.7614984960350013,
+  "silver_n": 1219
+ },
+ "latency": {
+  "latency_s_mean": 5.006485618129618,
+  "latency_s_p50": 4.255434899998363,
+  "latency_s_p95": 7.846550920000572,
+  "in_tok_mean": 171.46103363412632,
+  "out_tok_mean": 54.7292863002461
+ },
+ "autoscientist": [
+  {
+   "run": "#1 2B \u00b7 8k \u00b7 v1 prompt \u00b7 default",
+   "run_id": "99464db5-372f-42ad-ae49-c0163fc1a588",
+   "iteration": 1,
+   "best_win_rate": 0.7,
+   "status": "succeeded",
+   "learning_rate": 1e-05,
+   "n_epochs": 1.0,
+   "lora_r": 16.0,
+   "lora_alpha": 32.0,
+   "warmup_ratio": 0.1,
+   "target": 0.7
+  },
+  {
+   "run": "#2 2B \u00b7 17.8k \u00b7 v1 \u00b7 default",
+   "run_id": "2c060ec8-cc23-40e5-9e8e-57bbf0d37a6a",
+   "iteration": 1,
+   "best_win_rate": 0.6316,
+   "status": "running",
+   "learning_rate": 1e-05,
+   "n_epochs": 1.0,
+   "lora_r": 16.0,
+   "lora_alpha": 32.0,
+   "warmup_ratio": 0.1,
+   "target": 0.7
+  },
+  {
+   "run": "#2 2B \u00b7 17.8k \u00b7 v1 \u00b7 default",
+   "run_id": "2c060ec8-cc23-40e5-9e8e-57bbf0d37a6a",
+   "iteration": 2,
+   "best_win_rate": 0.9181,
+   "status": "succeeded",
+   "learning_rate": 5e-05,
+   "n_epochs": 3.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.7
+  },
+  {
+   "run": "#3 9B \u00b7 17.8k \u00b7 v1 \u00b7 default",
+   "run_id": "165c0bf4-8f62-4354-9e41-b6023431e211",
+   "iteration": 1,
+   "best_win_rate": 0.5419,
+   "status": "running",
+   "learning_rate": 1e-05,
+   "n_epochs": 1.0,
+   "lora_r": 16.0,
+   "lora_alpha": 32.0,
+   "warmup_ratio": 0.1,
+   "target": 0.7
+  },
+  {
+   "run": "#3 9B \u00b7 17.8k \u00b7 v1 \u00b7 default",
+   "run_id": "165c0bf4-8f62-4354-9e41-b6023431e211",
+   "iteration": 2,
+   "best_win_rate": 0.5587,
+   "status": "running",
+   "learning_rate": 0.0002,
+   "n_epochs": 5.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.03,
+   "target": 0.7
+  },
+  {
+   "run": "#3 9B \u00b7 17.8k \u00b7 v1 \u00b7 default",
+   "run_id": "165c0bf4-8f62-4354-9e41-b6023431e211",
+   "iteration": 3,
+   "best_win_rate": 0.5615,
+   "status": "succeeded",
+   "learning_rate": 0.0002,
+   "n_epochs": 4.0,
+   "lora_r": 64.0,
+   "lora_alpha": 128.0,
+   "warmup_ratio": 0.1,
+   "target": 0.7
+  },
+  {
+   "run": "#4 2B \u00b7 17.8k \u00b7 v1 \u00b7 target 0.95",
+   "run_id": "25d04b86-af94-45cf-be37-5acc5822614c",
+   "iteration": 1,
+   "best_win_rate": 0.6028,
+   "status": "running",
+   "learning_rate": 1e-05,
+   "n_epochs": 1.0,
+   "lora_r": 16.0,
+   "lora_alpha": 32.0,
+   "warmup_ratio": 0.1,
+   "target": 0.95
+  },
+  {
+   "run": "#4 2B \u00b7 17.8k \u00b7 v1 \u00b7 target 0.95",
+   "run_id": "25d04b86-af94-45cf-be37-5acc5822614c",
+   "iteration": 2,
+   "best_win_rate": 0.9019,
+   "status": "running",
+   "learning_rate": 0.0001,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.95
+  },
+  {
+   "run": "#4 2B \u00b7 17.8k \u00b7 v1 \u00b7 target 0.95",
+   "run_id": "25d04b86-af94-45cf-be37-5acc5822614c",
+   "iteration": 3,
+   "best_win_rate": 0.9019,
+   "status": "running",
+   "learning_rate": 0.0001,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.95
+  },
+  {
+   "run": "#5 2B \u00b7 17.8k \u00b7 v2 prompt \u00b7 lr/epoch override",
+   "run_id": "7ebe8824-9857-4552-8574-8b58b3d55be5",
+   "iteration": 1,
+   "best_win_rate": 0.8889,
+   "status": "running",
+   "learning_rate": 0.0002,
+   "n_epochs": 3.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.1,
+   "target": 0.9
+  },
+  {
+   "run": "#5 2B \u00b7 17.8k \u00b7 v2 prompt \u00b7 lr/epoch override",
+   "run_id": "7ebe8824-9857-4552-8574-8b58b3d55be5",
+   "iteration": 2,
+   "best_win_rate": 0.9227,
+   "status": "succeeded",
+   "learning_rate": 0.00015,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.9
+  }
+ ],
+ "data": {
+  "dp_vs_paper_event_agreement": 0.9998823283301083,
+  "raw_rows": 76484,
+  "rows_with_retweet_prefix": 11082,
+  "dropped_too_short": 3,
+  "train_label_conflict_keys_dropped": 0,
+  "test_label_conflict_keys_dropped": 0,
+  "dupes_removed": 3,
+  "train_rows_removed_exact_overlap_test": 8,
+  "near_dupes_removed_train": 12,
+  "near_dupes_removed_test": 16,
+  "train_rows_removed_near_dup_of_test": 7,
+  "train_rows": 49417,
+  "val_rows": 5491,
+  "test_rows": 21527
+ }
+}

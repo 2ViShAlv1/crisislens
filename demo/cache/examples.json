@@ -1,0 +1,113 @@
+[
+ {
+  "text": "Water entered the ground floor, 3 families with small kids stuck on the terrace of Shanti Apartments, Aluva. Need boats urgently, phones dying. #KeralaFloods",
+  "pred": {
+   "category": "requests_or_urgent_needs",
+   "actionable": true,
+   "urgency": 5,
+   "location": "Aluva",
+   "needs": [
+    "rescue",
+    "communication"
+   ],
+   "rationale": "Urgent need for boats and communication for trapped families."
+  },
+  "latency_s": 7.81
+ },
+ {
+  "text": "Bridge on NH-66 near Chalakudy has collapsed, all traffic diverted. Please avoid the route.",
+  "pred": {
+   "category": "infrastructure_and_utility_damage",
+   "actionable": true,
+   "urgency": 3,
+   "location": "Chalakudy",
+   "needs": [],
+   "rationale": "Specific infrastructure damage (bridge collapse) with traffic diversion instructions."
+  },
+  "latency_s": 9.8
+ },
+ {
+  "text": "Hospital in Chimanimani needs insulin and clean water, generator is running out of diesel.",
+  "pred": {
+   "category": "requests_or_urgent_needs",
+   "actionable": true,
+   "urgency": 4,
+   "location": "Chimanimani",
+   "needs": [
+    "medical",
+    "water",
+    "power"
+   ],
+   "rationale": "Specific request for insulin, water, and power for a hospital."
+  },
+  "latency_s": 5.2
+ },
+ {
+  "text": "Missing: my father Joseph, 68, last seen near Beira port on Thursday before the cyclone hit. Please share.",
+  "pred": {
+   "category": "missing_or_found_people",
+   "actionable": true,
+   "urgency": 5,
+   "location": "Beira port",
+   "needs": [
+    "missing-person-search"
+   ],
+   "rationale": "Specific person missing after cyclone; life-threatening situation."
+  },
+  "latency_s": 4.86
+ },
+ {
+  "text": "Death toll from the earthquake in Mexico City rises to 217, rescuers still searching collapsed buildings.",
+  "pred": {
+   "category": "injured_or_dead_people",
+   "actionable": false,
+   "urgency": 3,
+   "location": "Mexico City",
+   "needs": [],
+   "rationale": "Casualty count and general search for collapsed buildings."
+  },
+  "latency_s": 6.53
+ },
+ {
+  "text": "Volunteers needed at the Ernakulam collection centre tomorrow 9am to pack relief kits, bring tape and markers.",
+  "pred": {
+   "category": "requests_or_urgent_needs",
+   "actionable": true,
+   "urgency": 3,
+   "location": "Ernakulam",
+   "needs": [
+    "volunteers",
+    "clothing"
+   ],
+   "rationale": "Specific request for volunteers to pack relief kits at a collection centre."
+  },
+  "latency_s": 6.5
+ },
+ {
+  "text": "Evacuation shelters open at Marsh Harbour primary school and the community centre, bring ID and medicines.",
+  "pred": {
+   "category": "displaced_people_and_evacuations",
+   "actionable": true,
+   "urgency": 3,
+   "location": "Marsh Harbour",
+   "needs": [
+    "shelter",
+    "medical"
+   ],
+   "rationale": "Specific location of open evacuation shelters with requirements for ID and medicines."
+  },
+  "latency_s": 5.72
+ },
+ {
+  "text": "Thoughts and prayers to everyone in the Bahamas tonight.",
+  "pred": {
+   "category": "sympathy_and_support",
+   "actionable": false,
+   "urgency": 1,
+   "location": "Bahamas",
+   "needs": [],
+   "rationale": "Thoughts and prayers are not actionable."
+  },
+  "latency_s": 5.74
+ }
+]
