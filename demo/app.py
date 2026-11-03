@@ -12,8 +12,13 @@ import pandas as pd
 
 HERE = Path(__file__).parent
 CACHE = HERE / "cache"
-FT_INSTRUCTION = ("CrisisLens triage. Classify this disaster-time social-media post and return only the JSON record "
-                  "{category, actionable, urgency, location, needs, rationale}.")
+# Must match the training prompt exactly (src/sft_format.py FT_INSTRUCTION_V2, runs #5+).
+FT_INSTRUCTION = ("CrisisLens triage. Return only a JSON object with keys category, actionable (true/false), "
+                  "urgency (integer 1-5, 5=life-threatening), location (place written in the post or null), "
+                  "needs (list), rationale (<=20 words). category must be one of: caution_and_advice, "
+                  "displaced_people_and_evacuations, infrastructure_and_utility_damage, injured_or_dead_people, "
+                  "missing_or_found_people, not_humanitarian, other_relevant_information, requests_or_urgent_needs, "
+                  "rescue_volunteering_or_donation_effort, sympathy_and_support.")
 COLORS = {
     "requests_or_urgent_needs": "#d7263d", "injured_or_dead_people": "#7a0019", "missing_or_found_people": "#f46036",
     "displaced_people_and_evacuations": "#f9a03f", "infrastructure_and_utility_damage": "#8d6a9f",
