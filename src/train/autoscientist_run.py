@@ -72,9 +72,29 @@ def poll(c, a):
 def download(c, a):
     out = ROOT / "models" / a.run; out.mkdir(parents=True, exist_ok=True)
     tgz = out / "checkpoint.tar.zst"  # platform serves a zstd-compressed tar
-    resp = c.autoscientist.with_streaming_response.download(a.run)
-    with resp as r, open(tgz, "wb") as fh:
-        for chunk in r.iter_bytes(): fh.write(chunk)
+    # Resumable: on a slow link the stream can stall (ReadTimeout). Resume with an HTTP Range request;
+    # if the server ignores Range (200 instead of 206) start the file over. --fresh discards a partial file.
+    if getattr(a, "fresh", False) and tgz.exists(): tgz.unlink()
+    import httpx
+    for attempt in range(30):
+        have = tgz.stat().st_size if tgz.exists() else 0
+        hdr = {"Range": f"bytes={have}-"} if have else {}
+        try:
+            with c.autoscientist.with_streaming_response.download(a.run, extra_headers=hdr,
+                                                                    timeout=httpx.Timeout(120.0, connect=30.0)) as r:
+                code = r.http_response.status_code
+                if code == 416:  # range starts at end of file -> already complete
+                    break
+                mode = "ab" if (have and code == 206) else "wb"
+                print(now(), f"attempt {attempt}: HTTP {code}, resume from {have if mode == 'ab' else 0}", flush=True)
+                with open(tgz, mode) as fh:
+                    for chunk in r.iter_bytes(): fh.write(chunk)
+            break
+        except Exception as e:
+            print(now(), f"download interrupted at {tgz.stat().st_size if tgz.exists() else 0} bytes: {type(e).__name__}", flush=True)
+            time.sleep(5)
+    else:
+        raise SystemExit("download failed after 30 attempts")
     import zstandard
     with open(tgz, "rb") as fh:
         tarfile.open(fileobj=zstandard.ZstdDecompressor().stream_reader(fh), mode="r|").extractall(out, filter="data")
@@ -87,7 +107,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("cmd")
     ap.add_argument("--csv"); ap.add_argument("--name"); ap.add_argument("--model", default="Qwen/Qwen3.5-9B")
     ap.add_argument("--max-iterations", type=int, default=3); ap.add_argument("--target", type=float)
-    ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--hp"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
+    ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--hp"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true"); ap.add_argument("--fresh", action="store_true")
     a = ap.parse_args(); load_env()
     import httpx; from adaption import Adaption
     c = Adaption(timeout=httpx.Timeout(900.0, connect=30.0))  # 32 MB CSV uploads time out at the default write timeout

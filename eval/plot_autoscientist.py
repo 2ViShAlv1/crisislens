@@ -14,8 +14,11 @@ RUNS = {  # run id -> label (fixed order = fixed colour)
     "165c0bf4-8f62-4354-9e41-b6023431e211": "#3 9B · 17.8k · v1 · default",
     "25d04b86-af94-45cf-be37-5acc5822614c": "#4 2B · 17.8k · v1 · target 0.95",
     "7ebe8824-9857-4552-8574-8b58b3d55be5": "#5 2B · 17.8k · v2 prompt · lr/epoch override",
+    "fafc81b1-8876-43c1-80e9-75a1791d676c": "#6 4B · 17.8k · v2 · run #5 recipe",
+    "2b634ded-e0b7-4a21-9467-bf4025b0bcc1": "#7 2B · 37k (cap 5k) · v2 · run #5 recipe",
+    "fab5f195-3c03-4f96-ac63-fb31f6693054": "#8 2B · 49k (all) · v2 · 2 epochs",
 }
-PAL = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#6250d6"]
+PAL = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]  # dataviz slots 1-8, fixed order
 INK, INK2, SURF = "#0b0b0b", "#52514e", "#fcfcfb"
 plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False, "axes.edgecolor": "#d6d5d0",
                      "figure.facecolor": SURF, "axes.facecolor": SURF, "savefig.facecolor": SURF, "font.size": 9,
