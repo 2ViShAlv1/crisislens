@@ -23,8 +23,15 @@ def launch(c, a):
     if a.dataset:
         ds = a.dataset
     else:
-        up = c.datasets.upload_file(a.csv, name=a.name, processing_mode="raw",
-                                    column_mapping={"prompt": "prompt", "completion": "completion"})
+        # The SDK PUTs the file to S3 with bare httpx.put() (5 s default timeout), which times out on a
+        # 32 MB CSV over a home connection. Give that one call a long timeout for the upload only.
+        import functools, httpx, adaption.lib.upload as U
+        orig_put = U.httpx.put; U.httpx.put = functools.partial(orig_put, timeout=httpx.Timeout(900.0, connect=30.0))
+        try:
+            up = c.datasets.upload_file(a.csv, name=a.name, processing_mode="raw",
+                                        column_mapping={"prompt": "prompt", "completion": "completion"})
+        finally:
+            U.httpx.put = orig_put
         ds = up.dataset_id
     print("dataset", ds, flush=True)
     while True:
@@ -82,5 +89,6 @@ if __name__ == "__main__":
     ap.add_argument("--max-iterations", type=int, default=3); ap.add_argument("--target", type=float)
     ap.add_argument("--run"); ap.add_argument("--dataset"); ap.add_argument("--hp"); ap.add_argument("--every", type=int, default=120); ap.add_argument("--once", action="store_true")
     a = ap.parse_args(); load_env()
-    from adaption import Adaption; c = Adaption()
+    import httpx; from adaption import Adaption
+    c = Adaption(timeout=httpx.Timeout(900.0, connect=30.0))  # 32 MB CSV uploads time out at the default write timeout
     {"launch": launch, "poll": poll, "download": download}[a.cmd](c, a)
