@@ -1,8 +1,8 @@
 {
- "generated": "2026-11-03 12:51",
+ "generated": "2026-11-03 14:10",
  "model": {
   "key": "ft2b_run5",
-  "label": "CrisisLens 2B (run #5)",
+  "label": "CrisisLens 2B (ours)",
   "run_id": "7ebe8824-9857-4552-8574-8b58b3d55be5",
   "base": "Qwen/Qwen3.5-2B",
   "train_rows": 17784,
@@ -88,7 +88,7 @@
   },
   {
    "key": "ft2b_run5",
-   "label": "CrisisLens 2B run #5 (AutoScientist)",
+   "label": "CrisisLens 2B (ours)",
    "kind": "ours",
    "macro_f1": 0.7149212265236506,
    "ci": [
@@ -168,7 +168,7 @@
    "kerala_floods_2018": 0.5368837316058737,
    "mexico_earthquake_2017": 0.5568528093634871
   },
-  "CrisisLens 2B run #5 (AutoScientist)": {
+  "CrisisLens 2B (ours)": {
    "cyclone_idai_2019": 0.6170083830909117,
    "hurricane_dorian_2019": 0.616484301102383,
    "kerala_floods_2018": 0.7202422061208462,
@@ -312,6 +312,32 @@
    "target": 0.95
   },
   {
+   "run": "#4 2B \u00b7 17.8k \u00b7 v1 \u00b7 target 0.95",
+   "run_id": "25d04b86-af94-45cf-be37-5acc5822614c",
+   "iteration": 4,
+   "best_win_rate": 0.9019,
+   "status": "running",
+   "learning_rate": 0.0001,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.95
+  },
+  {
+   "run": "#4 2B \u00b7 17.8k \u00b7 v1 \u00b7 target 0.95",
+   "run_id": "25d04b86-af94-45cf-be37-5acc5822614c",
+   "iteration": 5,
+   "best_win_rate": 0.9322,
+   "status": "succeeded",
+   "learning_rate": 0.00015,
+   "n_epochs": 6.0,
+   "lora_r": 48.0,
+   "lora_alpha": 96.0,
+   "warmup_ratio": 0.05,
+   "target": 0.95
+  },
+  {
    "run": "#5 2B \u00b7 17.8k \u00b7 v2 prompt \u00b7 lr/epoch override",
    "run_id": "7ebe8824-9857-4552-8574-8b58b3d55be5",
    "iteration": 1,
@@ -336,6 +362,110 @@
    "lora_alpha": 64.0,
    "warmup_ratio": 0.05,
    "target": 0.9
+  },
+  {
+   "run": "#6 4B \u00b7 17.8k \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "fafc81b1-8876-43c1-80e9-75a1791d676c",
+   "iteration": 1,
+   "best_win_rate": 0.7536,
+   "status": "running",
+   "learning_rate": 0.00015,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#6 4B \u00b7 17.8k \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "fafc81b1-8876-43c1-80e9-75a1791d676c",
+   "iteration": 2,
+   "best_win_rate": 0.7536,
+   "status": "running",
+   "learning_rate": 0.00015,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#6 4B \u00b7 17.8k \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "fafc81b1-8876-43c1-80e9-75a1791d676c",
+   "iteration": 3,
+   "best_win_rate": 0.7536,
+   "status": "succeeded",
+   "learning_rate": 0.00015,
+   "n_epochs": 4.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#7 2B \u00b7 37k (cap 5k) \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "2b634ded-e0b7-4a21-9467-bf4025b0bcc1",
+   "iteration": 1,
+   "best_win_rate": 0.9128,
+   "status": "running",
+   "learning_rate": 0.00015,
+   "n_epochs": 3.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#7 2B \u00b7 37k (cap 5k) \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "2b634ded-e0b7-4a21-9467-bf4025b0bcc1",
+   "iteration": 2,
+   "best_win_rate": 0.9128,
+   "status": "running",
+   "learning_rate": 0.00015,
+   "n_epochs": 3.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#7 2B \u00b7 37k (cap 5k) \u00b7 v2 \u00b7 run #5 recipe",
+   "run_id": "2b634ded-e0b7-4a21-9467-bf4025b0bcc1",
+   "iteration": 3,
+   "best_win_rate": 0.9128,
+   "status": "succeeded",
+   "learning_rate": 0.00015,
+   "n_epochs": 3.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#8 2B \u00b7 49k (all) \u00b7 v2 \u00b7 2 epochs",
+   "run_id": "fab5f195-3c03-4f96-ac63-fb31f6693054",
+   "iteration": 1,
+   "best_win_rate": 0.9199,
+   "status": "running",
+   "learning_rate": 0.00015,
+   "n_epochs": 2.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
+  },
+  {
+   "run": "#8 2B \u00b7 49k (all) \u00b7 v2 \u00b7 2 epochs",
+   "run_id": "fab5f195-3c03-4f96-ac63-fb31f6693054",
+   "iteration": 2,
+   "best_win_rate": 0.9199,
+   "status": "succeeded",
+   "learning_rate": 0.00015,
+   "n_epochs": 2.0,
+   "lora_r": 32.0,
+   "lora_alpha": 64.0,
+   "warmup_ratio": 0.05,
+   "target": 0.93
   }
  ],
  "data": {

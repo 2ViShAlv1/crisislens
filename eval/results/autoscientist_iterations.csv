@@ -8,5 +8,15 @@ run,run_id,iteration,best_win_rate,status,learning_rate,n_epochs,lora_r,lora_alp
 #4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,1,0.6028,running,1e-05,1.0,16.0,32.0,0.1,0.95
 #4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,2,0.9019,running,0.0001,4.0,32.0,64.0,0.05,0.95
 #4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,3,0.9019,running,0.0001,4.0,32.0,64.0,0.05,0.95
+#4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,4,0.9019,running,0.0001,4.0,32.0,64.0,0.05,0.95
+#4 2B · 17.8k · v1 · target 0.95,25d04b86-af94-45cf-be37-5acc5822614c,5,0.9322,succeeded,0.00015,6.0,48.0,96.0,0.05,0.95
 #5 2B · 17.8k · v2 prompt · lr/epoch override,7ebe8824-9857-4552-8574-8b58b3d55be5,1,0.8889,running,0.0002,3.0,32.0,64.0,0.1,0.9
 #5 2B · 17.8k · v2 prompt · lr/epoch override,7ebe8824-9857-4552-8574-8b58b3d55be5,2,0.9227,succeeded,0.00015,4.0,32.0,64.0,0.05,0.9
+#6 4B · 17.8k · v2 · run #5 recipe,fafc81b1-8876-43c1-80e9-75a1791d676c,1,0.7536,running,0.00015,4.0,32.0,64.0,0.05,0.93
+#6 4B · 17.8k · v2 · run #5 recipe,fafc81b1-8876-43c1-80e9-75a1791d676c,2,0.7536,running,0.00015,4.0,32.0,64.0,0.05,0.93
+#6 4B · 17.8k · v2 · run #5 recipe,fafc81b1-8876-43c1-80e9-75a1791d676c,3,0.7536,succeeded,0.00015,4.0,32.0,64.0,0.05,0.93
+#7 2B · 37k (cap 5k) · v2 · run #5 recipe,2b634ded-e0b7-4a21-9467-bf4025b0bcc1,1,0.9128,running,0.00015,3.0,32.0,64.0,0.05,0.93
+#7 2B · 37k (cap 5k) · v2 · run #5 recipe,2b634ded-e0b7-4a21-9467-bf4025b0bcc1,2,0.9128,running,0.00015,3.0,32.0,64.0,0.05,0.93
+#7 2B · 37k (cap 5k) · v2 · run #5 recipe,2b634ded-e0b7-4a21-9467-bf4025b0bcc1,3,0.9128,succeeded,0.00015,3.0,32.0,64.0,0.05,0.93
+#8 2B · 49k (all) · v2 · 2 epochs,fab5f195-3c03-4f96-ac63-fb31f6693054,1,0.9199,running,0.00015,2.0,32.0,64.0,0.05,0.93
+#8 2B · 49k (all) · v2 · 2 epochs,fab5f195-3c03-4f96-ac63-fb31f6693054,2,0.9199,succeeded,0.00015,2.0,32.0,64.0,0.05,0.93
