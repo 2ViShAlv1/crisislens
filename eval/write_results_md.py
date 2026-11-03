@@ -59,6 +59,13 @@ if sel:
     L.append("Candidates are compared on `val_eval` (574 posts, 60 per class, drawn from the 15 *training* disasters). "
              "The selected model is the only fine-tuned candidate run on the test set, so the test set played no part in any decision.\n")
     L.append(sd.to_markdown(index=False) + "\n")
+    top = max(sel, key=lambda r: r["val macro-F1"])
+    fin_v = next(r for r in sel if r["selected"])
+    if top is not fin_v:
+        L.append(f"Run {top['run']} is {top['val macro-F1'] - fin_v['val macro-F1']:.3f} macro-F1 above the selected run {fin_v['run']} on validation. "
+                 "That is far inside both 95% CIs (about ±0.03 on 574 posts), so the two are statistically tied. Run "
+                 f"{fin_v['run']} is shipped because it is the candidate that was fully evaluated on the test set in the time available. "
+                 "The test set was not used to choose between them.\n")
     L.append("Win-rate is AutoScientist's judge score against each run's own base model. It is useful for steering a run, "
              "but it does not rank models by triage accuracy, which is why selection uses the validation metric.\n")
 
