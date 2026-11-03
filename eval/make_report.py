@@ -23,6 +23,8 @@ def load(name):
     if name == "tfidf":
         j = json.load(open(R / "baseline_tfidf.json"))["test_eval"]; return j
     f = R / f"{name}.json"
+    if not f.exists():  # partial runs (e.g. base zero-shot killed at 1,035/1,219) are only scored on the common subset
+        f = R / f"{name}__common.json"
     return json.load(open(f)) if f.exists() else None
 
 def main(pairs):
@@ -35,14 +37,16 @@ def main(pairs):
                      "ci_hi": j["macro_f1_ci95"][1], "weighted_f1": j["weighted_f1"],
                      "recall_urgent_needs": j["recall_requests_or_urgent_needs"],
                      "recall_injured_dead": j["recall_injured_or_dead_people"],
-                     "json_valid": j.get("json_valid_rate"), "latency_s": j.get("latency_s_mean", (j.get("latency_ms_per_post") or 0) / 1000),
+                     "json_valid": j.get("json_valid_rate"),
+                     "latency_s": j.get("latency_s_mean", (j["latency_ms_per_post"] / 1000) if j.get("latency_ms_per_post") else None),
                      "usd_per_1k": j.get("usd_per_1k_posts"), "n": j["n"]})
     df = pd.DataFrame(rows); df.to_csv(R / "summary.csv", index=False)
     fmt = df.copy()
     for c in ["macro_f1", "weighted_f1", "recall_urgent_needs", "recall_injured_dead", "json_valid"]:
         fmt[c] = fmt[c].map(lambda v: "—" if pd.isna(v) else f"{v:.3f}")
     fmt["macro_f1"] = [f"{m} [{lo:.3f}, {hi:.3f}]" for m, lo, hi in zip(fmt.macro_f1, df.ci_lo, df.ci_hi)]
-    fmt["latency_s"] = df.latency_s.map(lambda v: "—" if pd.isna(v) else f"{v:.3f}")
+    fmt["latency_s"] = df.latency_s.map(lambda v: "—" if pd.isna(v) else (f"{v * 1000:.2f} ms" if v < 0.01 else f"{v:.2f} s"))
+    fmt = fmt.rename(columns={"latency_s": "latency/post"})
     fmt["usd_per_1k"] = df.usd_per_1k.map(lambda v: "—" if pd.isna(v) else f"${v:.3f}")
     md = fmt.drop(columns=["key", "ci_lo", "ci_hi"]).to_markdown(index=False)
     (R / "summary.md").write_text(md, encoding="utf-8"); print(md); print("skipped:", skipped)
