@@ -96,7 +96,7 @@ def feed_step(state, event):
         state = state + [pool[i]]
     return state, queue_html(state)
 
-with gr.Blocks(title="CrisisLens", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="CrisisLens") as demo:
     gr.Markdown("# 🛰️ CrisisLens — disaster-response triage LLM\nFine-tuned with **AutoScientist** (Adaption Labs) on HumAID. "
                 "Evaluated on 4 disasters never seen in training (Kerala floods 2018, Cyclone Idai 2019, Mexico earthquake 2017, Hurricane Dorian 2019).\n\n"
                 "<small>Posts: HumAID (Alam et al., ICWSM 2021), CC BY-NC-SA 4.0. Decision support only — a human reviews every item.</small>")
@@ -125,4 +125,4 @@ with gr.Blocks(title="CrisisLens", theme=gr.themes.Soft()) as demo:
             gr.Image(str(img), label=img.stem, show_label=True)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(theme=gr.themes.Soft())  # Gradio 6: theme moved from Blocks() to launch()
