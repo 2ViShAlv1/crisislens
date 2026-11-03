@@ -6,7 +6,70 @@ trained with **Adaption Labs AutoScientist** on HumAID, evaluated on **four disa
 and served for **$0 on a CPU** with llama.cpp.
 
 <!-- RESULTS:START -->
-_Results are filled in by `eval/make_report.py` — see `eval/results/summary.md`._
+### Headline
+
+**CrisisLens (2B, AutoScientist run #5) reaches macro-F1 0.715 [95% CI 0.682–0.743] on 1,219 posts from four disasters it never saw in training**, against 0.606 for the best frontier API zero-shot (deepseek-v4-flash) and 0.662 for TF-IDF + LR. Recall on `requests_or_urgent_needs` is 0.760 (best API: 0.320). It runs on a laptop CPU for $0 per 1,000 posts (APIs: $0.065–$0.070), and 99.9% of outputs pass the strict JSON schema.
+
+### Test results: four held-out disasters (gold human labels)
+
+| system                               | macro_f1             |   weighted_f1 |   recall_urgent_needs |   recall_injured_dead | json_valid   | latency/post   | usd_per_1k   |    n |
+|:-------------------------------------|:---------------------|--------------:|----------------------:|----------------------:|:-------------|:---------------|:-------------|-----:|
+| TF-IDF+LR                            | 0.662 [0.623, 0.693] |         0.72  |                 0.54  |                 0.787 | —            | 0.35 ms        | —            | 1219 |
+| Qwen3.5-2B base zero-shot            | 0.427 [0.391, 0.456] |         0.328 |                 0.619 |                 0.895 | 0.998        | 11.28 s        | $0.000       | 1033 |
+| deepseek-v4-flash zero-shot (API)    | 0.606 [0.573, 0.635] |         0.667 |                 0.32  |                 0.734 | 0.998        | 2.15 s         | $0.065       | 1219 |
+| gemma-4-31b-it zero-shot (API)       | 0.592 [0.555, 0.622] |         0.67  |                 0.26  |                 0.681 | 1.000        | 1.00 s         | $0.070       | 1219 |
+| CrisisLens 2B run #5 (AutoScientist) | 0.715 [0.682, 0.743] |         0.759 |                 0.76  |                 0.904 | 0.999        | 5.01 s         | $0.000       | 1219 |
+
+Macro-F1 is computed over the classes present (all 10 are present in this set) with a 1,000-sample bootstrap CI. The base-model zero-shot run was stopped by a memory guard at 1,035/1,219 posts and is scored on the 1,033 it answered. API latency is wall-clock through the Adaption gateway. Local latency is a 12-thread laptop CPU (i7-1255U), one request at a time.
+
+### Model selection: validation set only
+
+Candidates are compared on `val_eval` (574 posts, 60 per class, drawn from the 15 *training* disasters). The selected model is the only fine-tuned candidate run on the test set, so the test set played no part in any decision.
+
+| run   | base       | training rows         | prompt   |   AutoScientist best win-rate |   val macro-F1 |   val weighted-F1 | val JSON valid   | selected   |
+|:------|:-----------|:----------------------|:---------|------------------------------:|---------------:|------------------:|:-----------------|:-----------|
+| #5    | Qwen3.5-2B | 17,784 (cap 2k/class) | v2       |                         0.923 |          0.791 |             0.787 | 100.0%           | ✅         |
+
+Win-rate is AutoScientist's judge score against each run's own base model. It is useful for steering a run, but it does not rank models by triage accuracy, which is why selection uses the validation metric.
+
+### Per-disaster macro-F1
+
+| disaster               |   CrisisLens |   deepseek-v4-flash zero-shot (API) |
+|:-----------------------|-------------:|------------------------------------:|
+| Cyclone Idai 2019      |        0.617 |                               0.563 |
+| Hurricane Dorian 2019  |        0.616 |                               0.439 |
+| Kerala floods 2018     |        0.72  |                               0.585 |
+| Mexico earthquake 2017 |        0.675 |                               0.56  |
+
+### Structured fields (scored against teacher silver labels, not human labels)
+
+| actionable acc   |   actionable F1 |   urgency MAE | urgency within ±1   |   urgent (≥4) F1 | location exact   | location overlap   |   needs Jaccard |
+|:-----------------|----------------:|--------------:|:--------------------|-----------------:|:-----------------|:-------------------|----------------:|
+| 92.4%            |           0.753 |          0.36 | 97.0%               |            0.703 | 85.9%            | 91.1%              |           0.761 |
+
+Silver-label check: on 100 rows reviewed against the post text (a review by Claude, **not** a human annotator), the teacher was right on actionable 97.0%, urgency 100.0%, location 94.0%, needs 96.0%, and all fields 89.0%. See `eval/human_check/`.
+
+### Comparison with the HumAID paper
+
+Alam et al. (ICWSM 2021) report weighted-F1 0.758–0.760 (BERT/RoBERTa) on a **random** split, where training and test share events. CrisisLens scores weighted-F1 0.759 on an **event-level** split, which is harder because vocabulary, places and needs change between disasters. The numbers are not directly comparable, and the setting here is the harder one.
+
+### AutoScientist runs
+
+| run                                           |   iterations |   best_win_rate |   final_lr |   final_epochs |   final_lora_r |
+|:----------------------------------------------|-------------:|----------------:|-----------:|---------------:|---------------:|
+| #1 2B · 8k · v1 prompt · default              |            1 |          0.7    |    1e-05   |              1 |             16 |
+| #2 2B · 17.8k · v1 · default                  |            2 |          0.9181 |    5e-05   |              3 |             32 |
+| #3 9B · 17.8k · v1 · default                  |            3 |          0.5615 |    0.0002  |              4 |             64 |
+| #4 2B · 17.8k · v1 · target 0.95              |            3 |          0.9019 |    0.0001  |              4 |             32 |
+| #5 2B · 17.8k · v2 prompt · lr/epoch override |            2 |          0.9227 |    0.00015 |              4 |             32 |
+
+Every polled state, launch request and `trainer_state.json` is in `eval/autoscientist/`. Charts: `demo/assets/3_autoscientist_iterations.png`, `4_autoscientist_loss.png`.
+
+![macro-F1](demo/assets/1_macro_f1.png)
+![life-critical recall](demo/assets/2_life_critical_recall.png)
+![per-class F1](demo/assets/5_per_class_f1.png)
+![AutoScientist iterations](demo/assets/3_autoscientist_iterations.png)
+
 <!-- RESULTS:END -->
 
 ## Architecture
